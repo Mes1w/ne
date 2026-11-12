@@ -28,7 +28,7 @@ def conv_json(cv, off):
             d = [str(x['v']) if x['k'] == 'c' else lh(x['n']) for x in t['d']]
             out.append({'s': s, 't': t, 'mux': d})
         else:
-            out.append({'s': s, 't': t, 'f': sop_h(SEGN_SOP[s], off)})
+            out.append({'s': s, 't': t, 'f': sop_h(SEG_SOP[s], off)})
     return out
 
 NET = {'dec1': dec_json(DEC1, 0), 'dec2': dec_json(DEC2, 4), 'P': P_TREE, 'pf': sop_h(P_SOP),
@@ -55,7 +55,7 @@ function pulse(e) {
   return n;
 }
 function zero() { var e = {}; N.dec1.concat(N.dec2).forEach(function (f) { e[f.q] = 0; }); return e; }
-function litSegs(cv, e) { return cv.filter(function (c) { return ev(c.t, e) === 0; }).map(function (c) { return c.s; }).join(''); }
+function litSegs(cv, e) { return cv.filter(function (c) { return ev(c.t, e) === 1; }).map(function (c) { return c.s; }).join(''); }
 '''
 
 UI = r'''
@@ -79,7 +79,7 @@ function ffCards(ffs) {
 function convTable(cv, id, qs) {
   var h = '<table id="' + id + '"><thead><tr><th>Выход</th><th>На чём</th><th>Функция / вход мультиплексора</th><th class="hl-num">Уровень</th><th>Сегмент</th></tr></thead><tbody>';
   cv.forEach(function (c) {
-    h += '<tr data-s="' + c.s + '"><td><span class="ov">' + c.s + '</span></td><td>' + (c.mux ? 'MS 8→1' : 'И-НЕ') + '</td><td class="fn" data-f>' + (c.mux ? '' : c.f) + '</td><td class="hl-num" data-v></td><td data-l></td></tr>';
+    h += '<tr data-s="' + c.s + '"><td>' + c.s + '</td><td>' + (c.mux ? 'MS 8→1' : 'И-НЕ') + '</td><td class="fn" data-f>' + (c.mux ? '' : c.f) + '</td><td class="hl-num" data-v></td><td data-l></td></tr>';
   });
   return h + '</tbody></table>';
 }
@@ -114,7 +114,7 @@ function renderDec(ffs, cv, hg, tid, e) {
   cv.forEach(function (c) {
     var tr = $(tid).querySelector('tr[data-s="' + c.s + '"]'), v = ev(c.t, e);
     tr.querySelector('[data-v]').textContent = v;
-    tr.querySelector('[data-l]').innerHTML = v === 0 ? '<span class="hl-badge hl-badge-good">горит</span>' : '<span class="hl-muted">погашен</span>';
+    tr.querySelector('[data-l]').innerHTML = v === 1 ? '<span class="hl-badge hl-badge-good">горит</span>' : '<span class="hl-muted">погашен</span>';
     if (c.mux) {
       var a = 0; c.t.sel.forEach(function (s, i) { a |= ev(s, e) << i; });
       tr.querySelector('[data-f]').innerHTML = 'адрес ' + qh(ffs[0].q) + qh(ffs[1].q) + qh(ffs[2].q) + ' = ' + (a + 8).toString(2).slice(1) + ' → D' + a + ' = ' + c.mux[a];
@@ -204,7 +204,7 @@ BODY = r'''
   <div class="row" id="d2"></div>
   <h4>Временная диаграмма (последние 24 такта)</h4>
   <div class="scroll" id="tm"></div>
-  <details open><summary>Преобразователь кода единиц (0 на выходе — сегмент горит)</summary><div class="scroll" id="c1"></div></details>
+  <details open><summary>Преобразователь кода единиц (1 на выходе — сегмент горит)</summary><div class="scroll" id="c1"></div></details>
   <details><summary>Преобразователь кода десятков</summary><div class="scroll" id="c2"></div></details>
 </div>
 '''

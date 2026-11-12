@@ -51,14 +51,14 @@ JK = jk()                                  # МДНФ функций возбу�
 P_SOP = minimize([CODE[9]], DC)            # перенос
 SEG_ON = {s: [CODE[d] for d in range(10) if s in SEG[d]] for s in SEGS}
 SEG_OFF = {s: [CODE[d] for d in range(10) if s not in SEG[d]] for s in SEGS}
-SEGN_SOP = {s: minimize(SEG_OFF[s], DC) for s in SEGS}   # инверсные функции (общий анод)
+SEG_SOP = {s: minimize(SEG_ON[s], DC) for s in SEGS}     # 1 - сегмент горит (общий катод)
 
 def mux_data(s):
     """Адрес Q4Q3Q2 (A2A1A0), на информационных входах 0, 1, Q1 или !Q1."""
     out = []
     for a in range(8):
         c0, c1 = a << 1, (a << 1) | 1
-        v = [None if m in DC else int(m in SEG_OFF[s]) for m in (c0, c1)]
+        v = [None if m in DC else int(m in SEG_ON[s]) for m in (c0, c1)]
         if v[0] is None and v[1] is None: d = const(0)
         elif v[0] in (None, v[1]) or v[1] is None or v[0] == v[1]:
             d = const(v[1] if v[1] is not None else v[0])
@@ -74,7 +74,7 @@ def decade(off):
     return ffs
 
 def conv(off):
-    return [(s, rename(mux_data(s) if s in MUX_SEGS else sop_to_nand(SEGN_SOP[s]), off)) for s in SEGS]
+    return [(s, rename(mux_data(s) if s in MUX_SEGS else sop_to_nand(SEG_SOP[s]), off)) for s in SEGS]
 
 DEC1, DEC2 = decade(0), decade(4)
 P_TREE = sop_to_nand(P_SOP)
@@ -99,7 +99,7 @@ def simulate(n_pulses):
     return hist
 
 def shown_digit(cv, env):
-    lit_ = ''.join(s for s, t in cv if ev_tree(t, env) == 0)      # 0 - сегмент горит
+    lit_ = ''.join(s for s, t in cv if ev_tree(t, env) == 1)      # 1 - сегмент горит
     for d, segs in SEG.items():
         if segs == lit_: return d
     return None

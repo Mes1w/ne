@@ -23,7 +23,7 @@ def fig_conv():
     cv = Canvas(); names = [x for i in (4, 3, 2, 1) for x in ('Q%d' % i, '!Q%d' % i)]
     outs, xr, yb = draw_conv(cv, 0, 0, CONV1, names, False)
     for n, xo, yo in outs:
-        cv.line([(xo, yo), (xr + 40, yo)]); terminal(cv, xr + 42, yo, lab('!' + n))
+        cv.line([(xo, yo), (xr + 40, yo)]); terminal(cv, xr + 42, yo, lab(n))
     cv.save(OUT + 'fig_converter')
 
 if __name__ == '__main__':

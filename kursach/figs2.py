@@ -44,18 +44,20 @@ def fig_principal():
         for r, i in enumerate(up): jog[i] = xi - 16 - 6 * r
         for r, i in enumerate(reversed(dn)): jog[i] = xi - 16 - 6 * r
         for i, (s, xo, yo) in enumerate(outs):
-            xr0 = xr + 6 + 14
-            cv.line([(xo, yo), (xr0, yo)]); resistor(cv, xr0, yo, 'R%d' % rnum); rnum += 1
-            jx = jog.get(i, xi - 16)
-            cv.line([(xr0 + 20, yo), (jx, yo), (jx, py[i]), (xi, py[i])])
+            jx = jog.get(i, xi - 16); xt = xr + 34
+            cv.line([(xo, yo), (jx, yo), (jx, py[i]), (xi, py[i])])
+            # подтягивающий резистор к +5 В: ток сегмента при «1» на выходе
+            cv.dot(xt, yo); cv.line([(xt, yo), (xt, yo - 6)]); cv.rect(xt - 4, yo - 22, 8, 16, 1.0); cv.line([(xt, yo - 22), (xt, yo - 26)])
+            cv.line([(xt - 5, yo - 26), (xt + 5, yo - 26)], 1.4)
+            cv.text(xt + 6, yo - 14, 'R%d' % rnum, size=5, ha='left'); cv.text(xt, yo - 28, '+5 В', size=4.5, va='bottom'); rnum += 1
             cv.text(xi + 7, py[i], s, size=6.5); cv.text(xi - 2, py[i] - 1.5, str(HG_PINS[s]), size=4.5, ha='right', va='bottom')
-        # условное изображение цифры и общий анод
+        # условное изображение цифры и общий катод
         cx, cy = xi + 38, (34 + yb) / 2
         for seg in ([(-8, -14), (8, -14)], [(8, -14), (8, 0)], [(8, 0), (8, 14)], [(-8, 14), (8, 14)], [(-8, 0), (-8, 14)], [(-8, -14), (-8, 0)], [(-8, 0), (8, 0)]):
             cv.line([(cx + a, cy + b_) for a, b_ in seg], 2.0)
         ya = yi0 + n * P + 4
-        cv.line([(xi + 62, ya), (xi + 76, ya)]); cv.text(xi + 64, ya - 1.5, '3, 14', size=4.5, ha='left', va='bottom')
-        cv.text(xi + 56, ya, 'A', size=6); cv.text(xi + 78, ya, '+5 В', size=6, ha='left')
+        cv.line([(xi + 62, ya), (xi + 80, ya)]); cv.text(xi + 64, ya - 1.5, '3, 14', size=4.5, ha='left', va='bottom')
+        cv.text(xi + 56, ya, 'K', size=6); gnd(cv, xi + 80, ya)
         cv.text((xc + xi + 62) / 2, 14, 'Преобразователь кода %s' % ('единиц' if k == 0 else 'десятков'), size=7)
         xlast = xc; xend = xi + 110; xc = xend + 20
     # магистраль
@@ -71,10 +73,10 @@ def fig_principal():
         if extra == 'gnd': gnd(cv, 30, yy)
     xa = 200
     cv.line([(BX, yq + 80), (xa, yq + 80)]); tapv(yq + 80, 'H')
-    cv.line([(xa, yq + 80), (xa, yq)]); cv.rect(xa - 4, yq + 20, 8, 20, 1.0); cv.text(xa + 7, yq + 30, 'R15', size=5, ha='left'); cv.text(xa, yq - 5, '+5 В', size=6)
+    cv.line([(xa, yq + 80), (xa, yq + 40)]); cv.line([(xa, yq + 20), (xa, yq)]); cv.rect(xa - 4, yq + 20, 8, 20, 1.0); cv.text(xa + 7, yq + 30, 'R15', size=5, ha='left'); cv.text(xa, yq - 5, '+5 В', size=6)
     xb = 280
     cv.line([(BX, yq + 96), (xb, yq + 96)]); tapv(yq + 96, 'R')
-    cv.line([(xb, yq + 96), (xb, yq)]); cv.rect(xb - 4, yq + 20, 8, 20, 1.0); cv.text(xb + 7, yq + 30, 'R16', size=5, ha='left'); cv.text(xb, yq - 5, '+5 В', size=6)
+    cv.line([(xb, yq + 96), (xb, yq + 40)]); cv.line([(xb, yq + 20), (xb, yq)]); cv.rect(xb - 4, yq + 20, 8, 20, 1.0); cv.text(xb + 7, yq + 30, 'R16', size=5, ha='left'); cv.text(xb, yq - 5, '+5 В', size=6)
     cv.dot(xb, yq + 96); cv.line([(xb, yq + 96), (xb + 30, yq + 96)]); cv.line([(xb + 30, yq + 96), (xb + 48, yq + 88)]); cv.line([(xb + 50, yq + 96), (xb + 70, yq + 96)])
     cv.text(xb + 40, yq + 84, 'SB1 «Сброс»', size=5, va='bottom'); gnd(cv, xb + 70, yq + 96)
     xk = 420
@@ -83,11 +85,11 @@ def fig_principal():
         cv.line([(xx, yq), (xx, yq + 26)]); cv.line([(xx - 7, yq + 26), (xx + 7, yq + 26)], 1.6); cv.line([(xx - 7, yq + 31), (xx + 7, yq + 31)], 1.6)
         cv.line([(xx, yq + 31), (xx, yq + 56)]); gnd(cv, xx, yq + 56); cv.text(xx, yq - 5, '+5 В', size=6)
         cv.text(xx + 10, yq + 24, ref, size=5, ha='left'); cv.text(xx + 10, yq + 34, lbl, size=5, ha='left')
-    sp = alloc.PK['spare_LA3'] + alloc.PK['spare_LA4']
-    notes = ['1. DD1–DD4 – К555ТВ9; DD5–DD11 – К555ЛА3; DD12–DD17 – К555ЛА4; DD18–DD20 – К555ЛА1; DD21–DD24 – К555КП7; HG1, HG2 – АЛС324Б.',
-             '2. Выводы питания: +5 В – выв. 14 DD5–DD20, выв. 16 DD1–DD4, DD21–DD24; общий – выв. 7 DD5–DD20, выв. 8 DD1–DD4, DD21–DD24.',
+    A = alloc
+    notes = ['1. %s – К555ТВ9; %s – К555ЛА3; %s – К555ЛА4; %s – К555ЛА1; %s – К555КП7; HG1, HG2 – АЛС324А (общий катод).' % tuple(A.RNG[t] for t in ('TV9', 'LA3', 'LA4', 'LA1', 'KP7')),
+             '2. Выводы питания: +5 В – выв. 14 {0}, выв. 16 {1}, {2}; общий – выв. 7 {0}, выв. 8 {1}, {2}.'.format(A.RNG14, A.RNG['TV9'], A.RNG['KP7']),
              '3. Цепи шины: C – счётный вход; P – перенос в старший разряд; H – лог. «1» (через R15); R – сброс (активный уровень «0»).',
-             '4. Входы неиспользуемых элементов %s соединить с общим проводом. R1–R14 – 330 Ом; R15, R16 – 1 кОм.' % ', '.join(sp)]
+             '4. ' + A.SPARE_TXT + ' R1–R14 – 620 Ом; R15, R16 – 1 кОм.']
     for i, t in enumerate(notes): cv.text(0, yq + 130 + i * 13, t, size=6, ha='left')
     cv.xs += [0, 900]
     cv.save(OUT + 'principal', dpi=250); draw.GAP = 8

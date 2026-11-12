@@ -36,6 +36,15 @@ def allocate():
         if t['k'] == 'mux': t['ref'] = 'DD%d' % n; pk['DD%d' % n] = 'KP7'; n += 1
     return pk
 PK = allocate()
+def _nums(*typs): return sorted(int(k[2:]) for k, v in PK.items() if k.startswith('DD') and v in typs)
+def _span(ns): return 'DD%d–DD%d' % (ns[0], ns[-1]) if len(ns) > 1 else 'DD%d' % ns[0]
+RNG = {t: _span(_nums(t)) for t in TYPES}; CNT = {t: len(_nums(t)) for t in TYPES}
+RNG14 = _span(_nums('LA3', 'LA4', 'LA1')); TOTAL = sum(CNT.values())
+SPARE = PK['spare_LA3'] + PK['spare_LA4'] + PK['spare_LA1']
+SPARE_TXT = ('Входы неиспользуемых элементов %s соединить с общим проводом.' % ', '.join(SPARE)) if SPARE else 'Неиспользуемых элементов нет.'
+if __name__ == '__main__':
+    print(RNG, CNT, RNG14, TOTAL, SPARE)
+    for s in SEGS: print(s, sop_str(SEG_SOP[s]))
 if __name__ == '__main__':
     import collections
     c = collections.Counter(v for k, v in PK.items() if k.startswith('DD')); print(c, {k: v for k, v in PK.items() if k.startswith('spare')})
