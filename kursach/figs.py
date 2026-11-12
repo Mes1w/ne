@@ -1,6 +1,6 @@
 from draw import *
 OUT = 'out/'
-def rn(a, b, first): return [first] + [x for i in range(a, b + 1) for x in ('Q%d' % i, '!Q%d' % i)]
+def rn(a, b, first): return [first] + [x for i in range(b, a - 1, -1) for x in ('Q%d' % i, '!Q%d' % i)]
 
 def fig_decade(ffs, names, fname, clkname):
     cv = Canvas(); r = HRails(cv, names, 0)

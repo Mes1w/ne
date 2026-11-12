@@ -68,7 +68,7 @@ def mux_data(s):
 
 def decade(off):
     ffs = []
-    for i in (1, 2, 3, 4):
+    for i in (4, 3, 2, 1):
         ffs.append({'q': 'Q%d' % (i + off), 'J': rename(sop_to_nand(JK['J%d' % i]), off),
                     'K': rename(sop_to_nand(JK['K%d' % i]), off), 'clk': 'C' if off == 0 else 'P'})
     return ffs

@@ -63,12 +63,12 @@ def timing():
     h = simulate(40)
     q = lambda k, hh: [s[k] for s in hh]
     h1 = h[:13]
-    fig_timing('fig_timing_dec1', [(lab('Q%d' % i), q('Q%d' % i, h1)) for i in (1, 2, 3, 4)], 12, 'C', [i % 10 for i in range(13)])
+    fig_timing('fig_timing_dec1', [(lab('Q%d' % i), q('Q%d' % i, h1)) for i in (4, 3, 2, 1)], 12, 'C', [i % 10 for i in range(13)])
     h2 = simulate(125)[::10]
-    fig_timing('fig_timing_dec2', [(lab('Q%d' % i), q('Q%d' % i, h2)) for i in (5, 6, 7, 8)], 12, 'P', [i % 10 for i in range(13)])
+    fig_timing('fig_timing_dec2', [(lab('Q%d' % i), q('Q%d' % i, h2)) for i in (8, 7, 6, 5)], 12, 'P', [i % 10 for i in range(13)])
     h3 = h[:33]
-    fig_timing('fig_timing_counter', [(lab('Q%d' % i), q('Q%d' % i, h3)) for i in (1, 2, 3, 4)] + [('P', q('P', h3))] +
-               [(lab('Q%d' % i), q('Q%d' % i, h3)) for i in (5, 6, 7, 8)], 32, 'C', list(range(33)))
+    fig_timing('fig_timing_counter', [(lab('Q%d' % i), q('Q%d' % i, h3)) for i in (4, 3, 2, 1)] + [('P', q('P', h3))] +
+               [(lab('Q%d' % i), q('Q%d' % i, h3)) for i in (8, 7, 6, 5)], 32, 'C', list(range(33)))
 
 if __name__ == '__main__':
     fig_block(); fig_ugo(); timing()

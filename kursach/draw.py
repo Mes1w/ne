@@ -177,7 +177,7 @@ def draw_decade(cv, x0, ytop, ffs, rails, pr):
             if node['k'] == 'c': const_stub(cv, node, xe, y, pr); continue
             xc = xcr - cp * r; r += 1
             cv.line([(xc, y), (xe, y)]); rails.tap(node['n'], xc, y)
-        draw_ff(cv, xff, g, f, pr)
+        draw_ff(cv, xff, g, f, pr); cv.text(xff + FW / 2, g['top'] - 3, lab(f['q']), size=7, va='bottom')
         xr = xff + FW; xq1, xq2 = xr + 14, xr + 24
         cv.line([(xr, g['J']), (xq1, g['J'])]); rails.tap(f['q'], xq1, g['J'])
         cv.line([(xr + 6, g['K']), (xq2, g['K'])]); rails.tap('!' + f['q'], xq2, g['K'])

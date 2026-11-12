@@ -13,6 +13,7 @@
 | `fig_decade1.*`, `fig_decade2.*` | младший и старший разряды по отдельности |
 | `fig_converter.*` | преобразователь кода одного разряда |
 | `fig_timing_*.png` | расчётные временные диаграммы (для сверки с Logic Analyzer) |
+| `maket.html` | интерактивный макет: открыть в браузере, подавать импульсы, смотреть индикаторы и диаграмму |
 
 ## Сборка в Multisim
 
@@ -30,4 +31,4 @@
     pip install matplotlib python-docx
     python3 design.py        # синтез + проверка счёта 00..99
     python3 figs.py && python3 figs2.py && python3 figs3.py
-    python3 build_report.py
+    python3 build_report.py && python3 gen_html.py
